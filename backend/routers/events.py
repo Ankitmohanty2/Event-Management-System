@@ -2,9 +2,9 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from ..database import get_db
-from .. import schemas, models
-from ..deps import get_current_user, require_admin
+from database import get_db
+import schemas, models
+from deps import get_current_user, require_admin
 
 
 router = APIRouter(prefix="/events", tags=["events"])

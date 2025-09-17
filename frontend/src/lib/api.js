@@ -1,15 +1,12 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-export type Credentials = { email: string; password: string };
-export type SignupPayload = { name: string; email: string; password: string; role?: "admin" | "normal" };
-
 function getAuthHeaders() {
   if (typeof window === "undefined") return {};
   const token = localStorage.getItem("access_token");
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-export async function signup(data: SignupPayload) {
+export async function signup(data) {
   const res = await fetch(`${API_URL}/auth/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -19,7 +16,7 @@ export async function signup(data: SignupPayload) {
   return res.json();
 }
 
-export async function login(credentials: Credentials) {
+export async function login(credentials) {
   const form = new URLSearchParams();
   form.append("username", credentials.email);
   form.append("password", credentials.password);
@@ -45,22 +42,13 @@ export async function getMe() {
   return res.json();
 }
 
-export type Event = {
-  id: number;
-  title: string;
-  description?: string;
-  date: string;
-  time: string;
-  image_url?: string;
-};
-
-export async function listEvents(): Promise<Event[]> {
+export async function listEvents() {
   const res = await fetch(`${API_URL}/events/`, { cache: "no-store" });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
 
-export async function createEvent(payload: Omit<Event, "id">) {
+export async function createEvent(payload) {
   const res = await fetch(`${API_URL}/events/`, {
     method: "POST",
     headers: { "Content-Type": "application/json", ...getAuthHeaders() },
@@ -70,7 +58,7 @@ export async function createEvent(payload: Omit<Event, "id">) {
   return res.json();
 }
 
-export async function updateEvent(id: number, payload: Partial<Omit<Event, "id">>) {
+export async function updateEvent(id, payload) {
   const res = await fetch(`${API_URL}/events/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json", ...getAuthHeaders() },
@@ -80,7 +68,7 @@ export async function updateEvent(id: number, payload: Partial<Omit<Event, "id">
   return res.json();
 }
 
-export async function deleteEvent(id: number) {
+export async function deleteEvent(id) {
   const res = await fetch(`${API_URL}/events/${id}`, {
     method: "DELETE",
     headers: { ...getAuthHeaders() },
@@ -93,5 +81,3 @@ export function logout() {
     localStorage.removeItem("access_token");
   }
 }
-
-
