@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from database import Base, engine
 from models import User, Event
-from routers import users, events
+from routers import users, events, upload
 
 
 def create_app() -> FastAPI:
@@ -22,6 +22,7 @@ def create_app() -> FastAPI:
 
     app.include_router(users.router)
     app.include_router(events.router)
+    app.include_router(upload.router)
 
     return app
 

@@ -7,14 +7,16 @@ export default async function EventsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Events</h1>
-        <a className="text-sm underline" href="/admin">Admin</a>
+        <a className="text-sm text-blue-600 hover:underline" href="/admin/events">Admin</a>
       </div>
       {events.length === 0 ? (
         <p className="text-gray-600">No events yet. Admins can create events from the dashboard.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((e) => (
-            <EventCard key={e.id} event={e} />
+            <div key={e.id} className="transform-gpu transition duration-200 hover:scale-[1.02]">
+              <EventCard event={e} />
+            </div>
           ))}
         </div>
       )}

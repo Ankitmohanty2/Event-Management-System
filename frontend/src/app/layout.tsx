@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata = {
   title: "Event Management System",
@@ -11,11 +12,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="antialiased">
-        <Navbar />
-        <main className="max-w-6xl mx-auto px-4 py-8 min-h-[70vh]">
-          {children}
-        </main>
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          <main className="max-w-6xl mx-auto px-4 pt-24 pb-10 min-h-[70vh]">
+            {children}
+          </main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

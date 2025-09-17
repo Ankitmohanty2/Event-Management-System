@@ -1,13 +1,11 @@
 "use client";
 import { useState } from "react";
-import { login, getMe } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
-import { Card, CardHeader, CardContent } from "@/components/ui/Card";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -18,9 +16,8 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     try {
-      await login({ email, password });
-      const me = await getMe();
-      router.push(me.role === "admin" ? "/admin" : "/events");
+      const u = await login(email, password);
+      router.push(u.role === "admin" ? "/admin/events" : "/events");
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
@@ -29,19 +26,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-[60vh] grid place-items-center">
-      <Card className="w-full max-w-sm">
-        <CardHeader>Login</CardHeader>
-        <CardContent>
-          {error && <p className="text-red-600 text-sm">{error}</p>}
-          <form onSubmit={onSubmit} className="space-y-3">
-            <Input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <Button disabled={loading} className="w-full">{loading ? "Signing in..." : "Login"}</Button>
-          </form>
-          <p className="text-xs mt-3">No account? <a className="underline" href="/signup">Signup</a></p>
-        </CardContent>
-      </Card>
+    <div className="min-h-[70vh] flex items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
+        <h1 className="text-2xl font-semibold mb-1">Welcome back</h1>
+        <p className="text-sm text-gray-600 mb-4">Login to continue</p>
+        {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
+        <form onSubmit={onSubmit} className="space-y-3">
+          <input className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <button disabled={loading} className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition disabled:opacity-50">
+            {loading ? "Signing in..." : "Login"}
+          </button>
+        </form>
+        <p className="text-xs text-gray-600 mt-3">No account? <a className="text-blue-600 hover:underline" href="/signup">Signup</a></p>
+      </div>
     </div>
   );
 }

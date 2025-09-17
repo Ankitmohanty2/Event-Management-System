@@ -4,7 +4,10 @@ import { createEvent, deleteEvent, getMe, listEvents, updateEvent } from "@/lib/
 import { useRouter } from "next/navigation";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
+import Label from "@/components/ui/Label";
+import Textarea from "@/components/ui/Textarea";
 import { Card, CardHeader, CardContent } from "@/components/ui/Card";
+import ImageUpload from "@/components/ImageUpload";
 
 export default function AdminPage() {
   const router = useRouter();
@@ -66,22 +69,41 @@ export default function AdminPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Admin - Manage Events</h1>
+        <h1 className="text-2xl font-semibold">Manage Events</h1>
         <a className="text-sm underline" href="/events">View site</a>
       </div>
 
       <Card>
         <CardHeader>Create new event</CardHeader>
         <CardContent>
-          <form onSubmit={handleCreate} className="space-y-3">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <Input placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-              <Input placeholder="Image URL" value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
-              <Input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
-              <Input type="time" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} />
+          <form onSubmit={handleCreate} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="title">Title</Label>
+                <Input id="title" placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="date">Date</Label>
+                <Input id="date" type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+              </div>
+              <div>
+                <Label htmlFor="time">Time</Label>
+                <Input id="time" type="time" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} />
+              </div>
             </div>
-            <textarea className="w-full rounded-md border px-3 py-2 text-sm" placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-            <Button>Create Event</Button>
+            <div>
+              <ImageUpload 
+                onImageUpload={(url) => setForm({ ...form, image_url: url })} 
+                currentImage={form.image_url}
+              />
+            </div>
+            <div>
+              <Label htmlFor="desc">Description</Label>
+              <Textarea id="desc" placeholder="Write a short description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+            </div>
+            <div className="flex justify-end">
+              <Button size="lg">Create Event</Button>
+            </div>
           </form>
         </CardContent>
       </Card>
@@ -89,13 +111,15 @@ export default function AdminPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {events.map((e) => (
           <Card key={e.id}>
-            <CardHeader>{e.title}</CardHeader>
+            <CardHeader className="flex items-center justify-between">
+              <span>{e.title}</span>
+              <span className="text-xs text-gray-500">{e.date} · {e.time}</span>
+            </CardHeader>
             <CardContent>
-              <div className="text-xs text-gray-500 mb-2">{e.date} at {e.time}</div>
-              {e.description && <p className="mb-2">{e.description}</p>}
+              {e.description && <p className="mb-3">{e.description}</p>}
               <div className="flex gap-3">
-                <Button className="bg-gray-900" onClick={() => handleUpdate(e.id, { title: prompt("New title", e.title) || e.title })}>Edit</Button>
-                <Button className="bg-red-600 hover:bg-red-500" onClick={() => handleDelete(e.id)}>Delete</Button>
+                <Button variant="secondary" onClick={() => handleUpdate(e.id, { title: prompt("New title", e.title) || e.title })}>Edit</Button>
+                <Button variant="danger" onClick={() => handleDelete(e.id)}>Delete</Button>
               </div>
             </CardContent>
           </Card>
