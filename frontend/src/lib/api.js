@@ -42,8 +42,11 @@ export async function getMe() {
   return res.json();
 }
 
-export async function listEvents() {
-  const res = await fetch(`${API_URL}/events/`, { cache: "no-store" });
+export async function listEvents(page = 1, pageSize = 10) {
+  const res = await fetch(`${API_URL}/events/?page=${page}&page_size=${pageSize}`, { 
+    cache: "no-store",
+    headers: { ...getAuthHeaders() }
+  });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }

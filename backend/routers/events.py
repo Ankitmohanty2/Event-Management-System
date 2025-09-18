@@ -1,7 +1,8 @@
-from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status, Body, Request
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Request, Query
 from datetime import date as date_type, time as time_type
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 from database import get_db
 import schemas, models
@@ -11,9 +12,43 @@ from deps import get_current_user, require_admin
 router = APIRouter(prefix="/events", tags=["events"])
 
 
-@router.get("/", response_model=List[schemas.EventOut])
-def list_events(db: Session = Depends(get_db)):
-    return db.query(models.Event).order_by(models.Event.date, models.Event.time).all()
+@router.get("/", response_model=schemas.EventListResponse)
+def list_events(
+    page: int = Query(1, ge=1, description="Page number"),
+    page_size: int = Query(10, ge=1, le=100, description="Number of events per page"),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
+    """List events with pagination (requires authentication)"""
+    # Calculate offset
+    offset = (page - 1) * page_size
+    
+    # Get total count
+    total_count = db.query(func.count(models.Event.id)).scalar()
+    
+    # Get paginated events
+    events = db.query(models.Event)\
+        .order_by(models.Event.date, models.Event.time)\
+        .offset(offset)\
+        .limit(page_size)\
+        .all()
+    
+    # Calculate pagination info
+    total_pages = (total_count + page_size - 1) // page_size
+    has_next = page < total_pages
+    has_prev = page > 1
+    
+    return {
+        "events": events,
+        "pagination": {
+            "page": page,
+            "page_size": page_size,
+            "total_count": total_count,
+            "total_pages": total_pages,
+            "has_next": has_next,
+            "has_prev": has_prev
+        }
+    }
 
 
 @router.get("/{event_id}", response_model=schemas.EventOut)

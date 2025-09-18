@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from datetime import date, time, datetime
 from pydantic import BaseModel, EmailStr, Field
 
@@ -60,6 +60,21 @@ class EventOut(EventBase):
 
     class Config:
         orm_mode = True
+
+
+# Pagination Schemas
+class PaginationInfo(BaseModel):
+    page: int
+    page_size: int
+    total_count: int
+    total_pages: int
+    has_next: bool
+    has_prev: bool
+
+
+class EventListResponse(BaseModel):
+    events: List[EventOut]
+    pagination: PaginationInfo
 
 
 # Auth Schemas

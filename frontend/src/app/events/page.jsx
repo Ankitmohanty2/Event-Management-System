@@ -1,26 +1,42 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { listEvents } from "@/lib/api";
 import EventCard from "@/components/EventCard";
+import Pagination from "@/components/ui/Pagination";
 import { useAuth } from "@/context/AuthContext";
 
 export default function EventsPage() {
-  const [events, setEvents] = useState([]);
+  const [eventsData, setEventsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(9); // 3x3 grid
   const { user } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
+    // Redirect to login if not authenticated
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
     loadEvents();
-  }, []);
+  }, [user, router, currentPage, pageSize]);
 
   const loadEvents = async () => {
+    if (!user) return;
+    
     try {
       setLoading(true);
       setError(null);
-      const data = await listEvents();
-      setEvents(data);
+      const data = await listEvents(currentPage, pageSize);
+      setEventsData(data);
     } catch (err) {
+      if (err.message.includes("401")) {
+        router.replace("/login");
+        return;
+      }
       setError("Failed to load events. Please try again.");
       console.error("Error loading events:", err);
     } finally {
@@ -28,6 +44,16 @@ export default function EventsPage() {
     }
   };
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page
+  };
+
+  // Show loading state
   if (loading) {
     return (
       <div className="space-y-6">
@@ -55,6 +81,7 @@ export default function EventsPage() {
     );
   }
 
+  // Show error state
   if (error) {
     return (
       <div className="space-y-6">
@@ -94,6 +121,9 @@ export default function EventsPage() {
     );
   }
 
+  const events = eventsData?.events || [];
+  const pagination = eventsData?.pagination;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -112,6 +142,33 @@ export default function EventsPage() {
             Manage Events
           </a>
         )}
+      </div>
+
+      {/* Page Size Selector */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <label htmlFor="pageSize" className="text-sm text-gray-700">Events per page:</label>
+          <select
+            id="pageSize"
+            value={pageSize}
+            onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
+            className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value={6}>6</option>
+            <option value={9}>9</option>
+            <option value={12}>12</option>
+            <option value={18}>18</option>
+          </select>
+        </div>
+        <button 
+          onClick={loadEvents}
+          className="inline-flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+        >
+          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Refresh
+        </button>
       </div>
 
       {events.length === 0 ? (
@@ -142,20 +199,6 @@ export default function EventsPage() {
         </div>
       ) : (
         <>
-          <div className="flex items-center justify-between">
-            <p className="text-gray-600">
-              Showing <span className="font-semibold">{events.length}</span> event{events.length !== 1 ? 's' : ''}
-            </p>
-            <button 
-              onClick={loadEvents}
-              className="inline-flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Refresh
-            </button>
-          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((event) => (
               <div key={event.id} className="transform-gpu transition duration-200 hover:scale-[1.02]">
@@ -163,6 +206,21 @@ export default function EventsPage() {
               </div>
             ))}
           </div>
+          
+          {/* Pagination */}
+          {pagination && pagination.total_pages > 1 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={pagination.page}
+                totalPages={pagination.total_pages}
+                onPageChange={handlePageChange}
+                hasNext={pagination.has_next}
+                hasPrev={pagination.has_prev}
+                totalCount={pagination.total_count}
+                pageSize={pagination.page_size}
+              />
+            </div>
+          )}
         </>
       )}
     </div>
