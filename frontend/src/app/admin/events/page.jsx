@@ -22,8 +22,8 @@ export default function AdminEventsPage() {
   const loadEvents = async () => {
     try {
       setLoading(true);
-      const data = await listEvents();
-      setEvents(data);
+      const data = await listEvents(1, 100); // Load all events for admin (large page size)
+      setEvents(data.events || []); // Extract events array from paginated response
     } catch (error) {
       console.error("Failed to load events:", error);
     } finally {
