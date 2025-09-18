@@ -44,8 +44,7 @@ export async function getMe() {
 
 export async function listEvents(page = 1, pageSize = 10) {
   const res = await fetch(`${API_URL}/events/?page=${page}&page_size=${pageSize}`, { 
-    cache: "no-store",
-    headers: { ...getAuthHeaders() }
+    cache: "no-store"
   });
   if (!res.ok) throw new Error(await res.text());
   return res.json();

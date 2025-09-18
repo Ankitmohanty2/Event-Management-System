@@ -16,10 +16,9 @@ router = APIRouter(prefix="/events", tags=["events"])
 def list_events(
     page: int = Query(1, ge=1, description="Page number"),
     page_size: int = Query(10, ge=1, le=100, description="Number of events per page"),
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
+    db: Session = Depends(get_db)
 ):
-    """List events with pagination (requires authentication)"""
+    """List events with pagination (public access)"""
     # Calculate offset
     offset = (page - 1) * page_size
     
