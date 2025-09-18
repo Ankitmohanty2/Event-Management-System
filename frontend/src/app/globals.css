@@ -1,23 +1,31 @@
+
+@import "react-datetime-picker/dist/DateTimePicker.css";
+@import "react-calendar/dist/Calendar.css";
+@import "react-clock/dist/Clock.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc; /* slate-50 */
-  --foreground: #0f172a; /* slate-900 */
+  --background: #f8fafc; 
+  --foreground: #0f172a; 
 }
 
 html, body { height: 100%; }
 body { background: var(--background); color: var(--foreground); }
 
-/* Smooth transitions for links and buttons */
 @layer components {
   .btn-primary { @apply rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition disabled:opacity-50; }
   .input { @apply w-full rounded-md border border-gray-300 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500; }
   .card { @apply rounded-xl bg-white p-6 shadow-md; }
 }
 
-/* Line clamp utilities */
+.react-datetime-picker__wrapper {
+  border-color: rgb(203 213 225); 
+}
+
+
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;

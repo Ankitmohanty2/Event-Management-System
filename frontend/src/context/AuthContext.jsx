@@ -9,7 +9,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // load from localStorage on mount
   useEffect(() => {
     const t = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
     if (t) {
@@ -36,6 +35,9 @@ export function AuthProvider({ children }) {
     apiLogout();
     setToken(null);
     setUser(null);
+    if (typeof window !== 'undefined') {
+      window.location.replace('/login');
+    }
   }, []);
 
   return (

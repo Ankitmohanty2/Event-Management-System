@@ -39,10 +39,11 @@ export default function EventsPage() {
 
   const handlePageSizeChange = (newPageSize) => {
     setPageSize(newPageSize);
-    setCurrentPage(1); // Reset to first page
+    setCurrentPage(1);
   };
 
-  // Show loading state
+
+
   if (loading) {
     return (
       <div className="space-y-6">
@@ -70,7 +71,7 @@ export default function EventsPage() {
     );
   }
 
-  // Show error state
+
   if (error) {
     return (
       <div className="space-y-6">
@@ -113,9 +114,25 @@ export default function EventsPage() {
   const events = eventsData?.events || [];
   const pagination = eventsData?.pagination;
 
+
+  if (!user) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
+          <h1 className="text-3xl font-bold text-gray-900 mb-3">Please log in to view events</h1>
+          <p className="text-gray-600 mb-6">You need an account to browse event details.</p>
+          <div className="flex items-center justify-center gap-3">
+            <a className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700" href="/login">Login</a>
+            <a className="px-5 py-2 rounded-lg border" href="/signup">Sign Up</a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      {/* Header Section */}
+     
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
@@ -159,7 +176,7 @@ export default function EventsPage() {
         </div>
       </div>
 
-      {/* Controls Section */}
+
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
@@ -223,7 +240,7 @@ export default function EventsPage() {
         </div>
       ) : (
         <>
-          {/* Events Grid */}
+       
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((event) => (
               <div key={event.id} className="transform-gpu transition duration-300 hover:scale-[1.03] hover:shadow-xl">
@@ -232,7 +249,7 @@ export default function EventsPage() {
             ))}
           </div>
           
-          {/* Pagination */}
+    
           {pagination && pagination.total_pages > 1 && (
             <div className="mt-8 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
               <Pagination
@@ -248,6 +265,7 @@ export default function EventsPage() {
           )}
         </>
       )}
+
     </div>
   );
 }

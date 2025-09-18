@@ -9,9 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "framer-motion": "^12.23.14",
     "next": "15.5.3",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-datetime-picker": "^7.0.1",
+    "react-dom": "19.1.0",
+    "react-flatpickr": "^4.0.11",
+    "three": "^0.180.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

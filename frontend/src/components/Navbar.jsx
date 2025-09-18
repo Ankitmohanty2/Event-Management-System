@@ -28,7 +28,7 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 z-40 w-full bg-white shadow-md">
       <div className="max-w-6xl mx-auto h-16 flex items-center justify-between px-4">
-        <a href="/" className="font-semibold tracking-tight">EventMS</a>
+        <a href="/" className="font-semibold tracking-tight">Event Management System</a>
         <div className="hidden md:block">
           <LinkGroup />
         </div>

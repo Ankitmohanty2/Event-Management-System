@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Toaster from "@/components/ui/Toaster";
 import Footer from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
       <body className="antialiased">
         <AuthProvider>
           <Navbar />
+          <Toaster />
           <main className="max-w-6xl mx-auto px-4 pt-24 pb-10 min-h-[70vh]">
             {children}
           </main>

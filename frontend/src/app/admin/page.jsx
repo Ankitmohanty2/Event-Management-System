@@ -24,8 +24,8 @@ export default function AdminPage() {
           router.replace("/login");
           return;
         }
-        const data = await listEvents();
-        setEvents(data);
+        const data = await listEvents(1, 100);
+        setEvents(data.events || []);
       } catch (e) {
         setError(e.message || "Failed to load");
       } finally {
@@ -109,21 +109,27 @@ export default function AdminPage() {
       </Card>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {events.map((e) => (
-          <Card key={e.id}>
-            <CardHeader className="flex items-center justify-between">
-              <span>{e.title}</span>
-              <span className="text-xs text-gray-500">{e.date} · {e.time}</span>
-            </CardHeader>
-            <CardContent>
-              {e.description && <p className="mb-3">{e.description}</p>}
-              <div className="flex gap-3">
-                <Button variant="secondary" onClick={() => handleUpdate(e.id, { title: prompt("New title", e.title) || e.title })}>Edit</Button>
-                <Button variant="danger" onClick={() => handleDelete(e.id)}>Delete</Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        {Array.isArray(events) && events.length > 0 ? (
+          events.map((e) => (
+            <Card key={e.id}>
+              <CardHeader className="flex items-center justify-between">
+                <span>{e.title}</span>
+                <span className="text-xs text-gray-500">{e.date} · {e.time}</span>
+              </CardHeader>
+              <CardContent>
+                {e.description && <p className="mb-3">{e.description}</p>}
+                <div className="flex gap-3">
+                  <Button variant="secondary" onClick={() => handleUpdate(e.id, { title: prompt("New title", e.title) || e.title })}>Edit</Button>
+                  <Button variant="danger" onClick={() => handleDelete(e.id)}>Delete</Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <div className="col-span-full text-center py-8 text-gray-500">
+            No events found. Create your first event above.
+          </div>
+        )}
       </div>
     </div>
   );

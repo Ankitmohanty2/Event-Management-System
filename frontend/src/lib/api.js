@@ -50,6 +50,14 @@ export async function listEvents(page = 1, pageSize = 10) {
   return res.json();
 }
 
+export async function getEvent(id) {
+  const res = await fetch(`${API_URL}/events/${id}`, { 
+    cache: "no-store"
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
 export async function createEvent(payload) {
   const res = await fetch(`${API_URL}/events/`, {
     method: "POST",

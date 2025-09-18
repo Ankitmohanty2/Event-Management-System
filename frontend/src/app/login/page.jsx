@@ -19,7 +19,14 @@ export default function LoginPage() {
       const u = await login(email, password);
       router.push(u.role === "admin" ? "/admin/events" : "/events");
     } catch (err) {
-      setError(err.message || "Login failed");
+      let msg = "Login failed";
+      try {
+        const parsed = JSON.parse(err.message);
+        if (parsed?.detail) msg = parsed.detail;
+      } catch {
+        if (err?.message) msg = String(err.message);
+      }
+      setError(msg);
     } finally {
       setLoading(false);
     }
