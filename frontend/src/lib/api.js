@@ -59,12 +59,17 @@ export async function createEvent(payload) {
 }
 
 export async function updateEvent(id, payload) {
+  console.log("API: Updating event", id, "with payload:", payload);
   const res = await fetch(`${API_URL}/events/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json", ...getAuthHeaders() },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(await res.text());
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error("API Error:", errorText);
+    throw new Error(errorText);
+  }
   return res.json();
 }
 

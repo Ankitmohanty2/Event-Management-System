@@ -4,7 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from database import Base, engine
 from models import User, Event
-from routers import users, events, upload
+from routers import users, events
+from routers import upload
 
 
 def create_app() -> FastAPI:
@@ -12,9 +13,12 @@ def create_app() -> FastAPI:
 
     app = FastAPI(title="Event Management System API")
 
+    cors_origins = os.getenv("CORS_ORIGINS", "*")
+    allow_origins = [o.strip() for o in cors_origins.split(",") if o.strip()] if cors_origins else ["*"]
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[os.getenv("CORS_ORIGINS", "*")],
+        allow_origins=allow_origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

@@ -26,7 +26,7 @@ class UserOut(BaseModel):
     role: str
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 # Event Schemas
@@ -48,6 +48,9 @@ class EventUpdate(BaseModel):
     date: Optional[date] = None
     time: Optional[time] = None
     image_url: Optional[str] = None
+    
+    class Config:
+        extra = "ignore"
 
 
 class EventOut(EventBase):
@@ -56,7 +59,7 @@ class EventOut(EventBase):
     updated_at: datetime
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 # Auth Schemas
@@ -68,4 +71,3 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     user_id: int
     role: str
-
