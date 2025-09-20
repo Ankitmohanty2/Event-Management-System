@@ -18,7 +18,6 @@ export default function EditEventModal({ isOpen, onClose, event, onEventUpdated 
   });
   const [submitting, setSubmitting] = useState(false);
 
-  // Initialize form with event data when modal opens
   useEffect(() => {
     if (event && isOpen) {
       setForm({
@@ -41,7 +40,6 @@ export default function EditEventModal({ isOpen, onClose, event, onEventUpdated 
 
     setSubmitting(true);
     try {
-      // Prepare the update payload - only send fields that are different from original
       const updatePayload = {};
       
       if (form.title !== event.title) {
@@ -142,7 +140,6 @@ export default function EditEventModal({ isOpen, onClose, event, onEventUpdated 
           />
         </div>
 
-        {/* Current Event Info */}
         <div className="bg-gray-50 rounded-lg p-4">
           <h4 className="text-sm font-medium text-gray-900 mb-2">Current Event Details</h4>
           <div className="grid grid-cols-2 gap-4 text-sm">

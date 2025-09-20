@@ -5,7 +5,6 @@ export default function ImageUpload({ onImageUpload, currentImage }) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState(currentImage || "");
 
-  // Update preview when currentImage changes (for form clearing)
   useEffect(() => {
     setPreview(currentImage || "");
   }, [currentImage]);

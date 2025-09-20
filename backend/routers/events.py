@@ -18,21 +18,13 @@ def list_events(
     page_size: int = Query(10, ge=1, le=100, description="Number of events per page"),
     db: Session = Depends(get_db)
 ):
-    """List events with pagination (public access)"""
-    # Calculate offset
     offset = (page - 1) * page_size
-    
-    # Get total count
     total_count = db.query(func.count(models.Event.id)).scalar()
-    
-    # Get paginated events
     events = db.query(models.Event)\
         .order_by(models.Event.date, models.Event.time)\
         .offset(offset)\
         .limit(page_size)\
         .all()
-    
-    # Calculate pagination info
     total_pages = (total_count + page_size - 1) // page_size
     has_next = page < total_pages
     has_prev = page > 1
@@ -60,7 +52,6 @@ def get_event(event_id: int, db: Session = Depends(get_db)):
 
 @router.post("/", response_model=schemas.EventOut, status_code=status.HTTP_201_CREATED)
 def create_event(event: schemas.EventCreate, db: Session = Depends(get_db), _: models.User = Depends(require_admin)):
-    # Pydantic v1
     event_obj = models.Event(**event.dict())
     db.add(event_obj)
     db.commit()
@@ -74,13 +65,11 @@ async def update_event(event_id: int, request: Request, db: Session = Depends(ge
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
     
-    # Read raw JSON to avoid strict validation
     try:
         payload: dict = await request.json()
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid JSON body")
 
-    # Normalize/coerce inputs
     normalized: dict = {}
     for key, value in payload.items():
         if value in (None, ""):
@@ -99,7 +88,6 @@ async def update_event(event_id: int, request: Request, db: Session = Depends(ge
                 raise HTTPException(status_code=400, detail="Invalid time format. Use HH:MM or HH:MM:SS")
         normalized[key] = value
 
-    # Update only valid attributes
     for key, value in normalized.items():
         if hasattr(event, key):
             setattr(event, key, value)
