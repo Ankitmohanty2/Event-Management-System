@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
@@ -8,12 +9,14 @@ export default function Navbar() {
 
   const LinkGroup = () => (
     <nav className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6 text-sm">
-      <a className="hover:text-blue-600 transition" href="/events">Events</a>
-      {user?.role === "admin" && <a className="hover:text-blue-600 transition" href="/admin/events">Admin</a>}
+      <Link className="hover:text-blue-600 transition" href="/events">Events</Link>
+      {user?.role === "admin" && (
+        <Link className="hover:text-blue-600 transition" href="/admin/events">Admin</Link>
+      )}
       {!user && (
         <>
-          <a className="hover:text-blue-600 transition" href="/login">Login</a>
-          <a className="hover:text-blue-600 transition" href="/signup">Signup</a>
+          <Link className="hover:text-blue-600 transition" href="/login">Login</Link>
+          <Link className="hover:text-blue-600 transition" href="/signup">Signup</Link>
         </>
       )}
       {user && (
@@ -26,9 +29,9 @@ export default function Navbar() {
   );
 
   return (
-    <header className="fixed top-0 z-40 w-full bg-white shadow-md">
-      <div className="max-w-6xl mx-auto h-16 flex items-center justify-between px-4">
-        <a href="/" className="font-semibold tracking-tight">Event Management System</a>
+    <header className="fixed top-0 z-40 w-full bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b">
+      <div className="max-w-7xl mx-auto h-16 flex items-center justify-between px-4">
+        <Link href="/" className="font-semibold tracking-tight hover:text-blue-600 transition">Event Management System</Link>
         <div className="hidden md:block">
           <LinkGroup />
         </div>
