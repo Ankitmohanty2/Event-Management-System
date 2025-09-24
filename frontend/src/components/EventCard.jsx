@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function EventCard({ event }) {
   const router = useRouter();
@@ -59,13 +60,16 @@ export default function EventCard({ event }) {
       <Card className="h-full flex flex-col bg-white border-0 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group">
         <div className="relative w-full overflow-hidden bg-slate-100">
           {event.image_url ? (
-            <motion.img 
-              src={event.image_url} 
-              alt={event.title} 
-              className="h-52 w-full object-cover transition-transform duration-500 group-hover:scale-110"
-              whileHover={{ scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            />
+            <div className="relative h-52 w-full">
+              <Image
+                src={event.image_url}
+                alt={event.title}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority={false}
+              />
+            </div>
           ) : (
             <motion.div 
               className="h-52 w-full grid place-items-center text-slate-400 bg-gradient-to-br from-slate-50 to-slate-100"

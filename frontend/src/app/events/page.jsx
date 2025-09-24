@@ -13,6 +13,18 @@ export default function EventsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(9); // 3x3 grid
   const { user } = useAuth();
+  const loginCTA = (
+    <div className="space-y-6">
+      <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
+        <h1 className="text-3xl font-bold text-gray-900 mb-3">Please log in to view events</h1>
+        <p className="text-gray-600 mb-6">You need an account to browse event details.</p>
+        <div className="flex items-center justify-center gap-3">
+          <Link className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700" href="/login">Login</Link>
+          <Link className="px-5 py-2 rounded-lg border" href="/signup">Sign Up</Link>
+        </div>
+      </div>
+    </div>
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -50,7 +62,7 @@ export default function EventsPage() {
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-900">All Events</h1>
           {user?.role === "admin" && (
-            <a 
+            <Link 
               className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors" 
               href="/admin/events"
             >
@@ -58,7 +70,7 @@ export default function EventsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               Manage Events
-            </a>
+            </Link>
           )}
         </div>
         <div className="flex items-center justify-center min-h-[400px]">
@@ -115,20 +127,7 @@ export default function EventsPage() {
   const pagination = eventsData?.pagination;
 
 
-  if (!user) {
-    return (
-      <div className="space-y-6">
-        <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">Please log in to view events</h1>
-          <p className="text-gray-600 mb-6">You need an account to browse event details.</p>
-          <div className="flex items-center justify-center gap-3">
-            <a className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700" href="/login">Login</a>
-            <a className="px-5 py-2 rounded-lg border" href="/signup">Sign Up</a>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (!user) return loginCTA;
 
   return (
     <div className="space-y-6">
@@ -145,8 +144,8 @@ export default function EventsPage() {
             </p>
           </div>
           <div className="flex flex-col gap-3">
-            {user?.role === "admin" && (
-              <a 
+          {user?.role === "admin" && (
+              <Link 
                 className="inline-flex items-center px-6 py-3 bg-white text-blue-600 rounded-xl hover:bg-blue-50 transition-colors font-semibold shadow-lg" 
                 href="/admin/events"
               >
@@ -154,22 +153,22 @@ export default function EventsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
                 Manage Events
-              </a>
+              </Link>
             )}
             {!user && (
               <div className="flex gap-2">
-                <a 
+                <Link 
                   className="inline-flex items-center px-4 py-2 bg-white bg-opacity-20 text-white rounded-lg hover:bg-opacity-30 transition-colors" 
                   href="/login"
                 >
                   Login
-                </a>
-                <a 
+                </Link>
+                <Link 
                   className="inline-flex items-center px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold" 
                   href="/signup"
                 >
                   Sign Up
-                </a>
+                </Link>
               </div>
             )}
           </div>
@@ -179,7 +178,7 @@ export default function EventsPage() {
 
       <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 flex-wrap gap-y-3">
             <div className="flex items-center space-x-2">
               <label htmlFor="pageSize" className="text-sm font-medium text-gray-700">Events per page:</label>
               <select
@@ -212,7 +211,7 @@ export default function EventsPage() {
         </div>
       </div>
 
-      {events.length === 0 ? (
+          {events.length === 0 ? (
         <div className="bg-white rounded-2xl p-12 text-center shadow-sm border border-gray-100">
           <div className="text-gray-400 mb-6">
             <svg className="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -227,7 +226,7 @@ export default function EventsPage() {
             }
           </p>
           {user?.role === "admin" && (
-            <a 
+            <Link 
               href="/admin/events"
               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-semibold shadow-lg"
             >
@@ -235,7 +234,7 @@ export default function EventsPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               Create Event
-            </a>
+            </Link>
           )}
         </div>
       ) : (
