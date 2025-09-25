@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AuthProvider>
           <Navbar />
           <Toaster />
-          <main className="max-w-6xl mx-auto px-4 pt-24 pb-10 min-h-[70vh]">
+          <main className="max-w-7xl mx-auto px-4 pt-24 pb-14 min-h-[72vh]">
             {children}
           </main>
           <Footer />

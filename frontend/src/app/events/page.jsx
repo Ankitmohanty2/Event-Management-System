@@ -5,6 +5,7 @@ import { listEvents } from "@/lib/api";
 import EventCard from "@/components/EventCard";
 import Pagination from "@/components/ui/Pagination";
 import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
 
 export default function EventsPage() {
   const [eventsData, setEventsData] = useState(null);
